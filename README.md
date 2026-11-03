@@ -3,7 +3,7 @@
 
 ### Requisitos funcionales:
 * **(Objetivo)** El sistema deberá notificar a las editoriales que su reserva está pronto de vencer (Fecha limite).
-* **(Objetivo)** El sistema deberánotificar a las editoriales que su fecha límite de pronto pago de su reserva está pronto de vencer.
+* **(Objetivo)** El sistema deberá notificar a las editoriales que su fecha límite de pronto pago de su reserva está pronto de vencer.
 * **(Objetivo)** El programa deberá realizar un descuento del 15% del precio del stand que se tiene reservado si se realiza el pronto pago.
 * **(Principal)** Al iniciar sesión con el nombre de la editorial, se realizará las pestañas de las notificaciones del límite de fecha límite de prepago y la de límite de la reserva.
 * El sistema contendrá una pestaña de inicio de sesión para las editoriales.

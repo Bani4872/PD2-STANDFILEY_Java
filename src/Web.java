@@ -9,6 +9,8 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
+/*Interfaz web hecha mayormente con IA*/
+
 public class Web {
     
     // Aquí guardaremos las editoriales en memoria para el inicio de sesión
