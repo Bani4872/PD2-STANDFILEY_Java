@@ -1,26 +1,52 @@
 package src;
+
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Funcionalidades {
-    public static void AvisoProntoPago(Editorial editorial, Stand stand, Fecha fecha){
-        System.out.println("Aviso: Faltan: " + (Macros.DiasParaProntoPago - fecha.Dia) + " dias para el pronto pago del stand " + stand.Identificador);
+
+    public static String AvisoProntoPago(Editorial editorial, Stand stand, Fecha fecha){
+        int diasFaltantes = Macros.DiasParaProntoPago - fecha.Dia;
+        if (diasFaltantes <= 5) {
+            return "Aviso: Faltan " + diasFaltantes + " días para el pronto pago del stand " + stand.Identificador;
+        }
+        return null;
     }
 
-    public static void AvisoDiasParaLimitePago(Editorial editorial, Stand stand, Fecha fecha){
-        System.out.println("Aviso: Faltan: " + (Macros.LimitePago - fecha.Dia) + " dias para el limite de pago del stand " + stand.Identificador);
+    public static String AvisoDiasParaLimitePago(Editorial editorial, Stand stand, Fecha fecha){
+        int diasFaltantes = Macros.LimitePago - fecha.Dia;
+        if(diasFaltantes <= 5) {
+            return "Aviso: Faltan " + diasFaltantes + " días para el límite de pago del stand " + stand.Identificador;
+        }
+        return null;
     }
 
-    public static void AvisoPagoTardio(Editorial editorial, Stand stand, Fecha fecha){ 
-        System.out.println("Aviso: Se ha excedido la fecha limite de pago del stand " + stand.Identificador);
+    public static String AvisoPagoTardio(Editorial editorial, Stand stand, Fecha fecha){ 
+        if(fecha.Dia > Macros.LimitePago) {
+            return "Aviso: Se ha excedido la fecha límite de pago del stand " + stand.Identificador;
+        }
+        return null;
     }
 
-    public static void ImprimirListaDeReservas(Editorial editorial){
-        System.out.println("Lista de reservas de la editorial " + editorial.Nombre + ":");
+    public static List<String> ObtenerNotificacionesEditorial(Editorial editorial) {
+        List<String> notificaciones = new ArrayList<>();
+        if (editorial == null || editorial.Reservas == null) return notificaciones;
+
         for (Map.Entry<Stand, Fecha> entry : editorial.Reservas.entrySet()) {
             Stand stand = entry.getKey();
             Fecha fecha = entry.getValue();
-            System.out.println("Stand: " + stand.Identificador + "Dimensiones: " + stand.Alto + "x" + stand.Ancho + "\nFecha de reserva: " + fecha.Dia + "/" + fecha.Mes + "\nPrecio: " + stand.Costo + " (Pronto pago: " + stand.Costo * Macros.DescuentoProntoPago + ")");
+
+            String avisoPronto = AvisoProntoPago(editorial, stand, fecha);
+            if (avisoPronto != null) notificaciones.add(avisoPronto);
+
+            String avisoLimite = AvisoDiasParaLimitePago(editorial, stand, fecha);
+            if (avisoLimite != null) notificaciones.add(avisoLimite);
+
+            String avisoTardio = AvisoPagoTardio(editorial, stand, fecha);
+            if (avisoTardio != null) notificaciones.add(avisoTardio);
         }
+        return notificaciones;
     }
 
     public static void DesbloquearStand(Stand stand){
@@ -38,16 +64,15 @@ public class Funcionalidades {
     }
 
     public static void RastrearStandEspecial(Editorial editorial){
+        if (editorial == null) return;
 
-        Integer Valor = Macros.EditorialesEspeciales.get(editorial.IdentificadorUnico);
+        Integer idStandEspecial = Macros.EditorialesEspeciales.get(editorial.IdentificadorUnico);
 
-        if(Valor != null){
-            Stand stand = EncontrarStand(Valor);
-            if(stand != null){
+        if (idStandEspecial != null) {
+            Stand stand = EncontrarStand(idStandEspecial);
+            if (stand != null && stand.Estado == 3) {
                 DesbloquearStand(stand);
-            }else{
-                System.out.println("Stand no existente");
-                return;
+                System.out.println("Stand " + idStandEspecial + " desbloqueado para " + editorial.Nombre);
             }
         }
     }

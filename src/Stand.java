@@ -4,7 +4,7 @@ public class Stand {
     public int Estado;
     public int Alto;
     public int Ancho;
-    public int Costo;
+    public double Costo;
 
     public Stand(int Identificador, int Estado, int Alto, int Ancho){
         this.Identificador = Identificador;
@@ -12,5 +12,6 @@ public class Stand {
         this.Alto = Alto;
         this.Ancho = Ancho;
         this.Costo = Alto*Ancho*(Macros.CostoMetroCuadrado);
+        Macros.Stands.add(this);
     }
 }

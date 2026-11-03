@@ -1,6 +1,5 @@
 package src;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 public class Macros {
     static int CostoMetroCuadrado = 10;
@@ -14,11 +13,13 @@ public class Macros {
         3, "Bloqueado"
     );
 
+    
     static Map<Integer, Integer> EditorialesEspeciales = Map.of(
-        123456, 1,
-        789012, 2,
-        345678, 3
+        "UADY".hashCode(), 5,
+        "Planeta".hashCode(), 3,
+        "Diario de Yucatán".hashCode(), 4
     );
 
-    static Vector<Stand> Stands = new Vector<Stand>();
+    public static Vector<Stand> Stands = new Vector<>();
+
 }
