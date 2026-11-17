@@ -26,3 +26,5 @@
 
 # **srcJava:**
 **Codigo puramente Java solo terminal, puede ser utilizado con pruebas unitarias**
+
+LINK DEL VIDEO: https://youtu.be/gwA1vxeTflU
