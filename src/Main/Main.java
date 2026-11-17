@@ -1,6 +1,6 @@
 
+import BD.BasedeDatos;
 import Controlador.Web;
-import Modelo.BasedeDatos;
 import Modelo.Stand;
 
 

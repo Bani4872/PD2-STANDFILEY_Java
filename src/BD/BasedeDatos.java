@@ -1,31 +1,18 @@
-package Modelo;
-
+package BD;
 
 import java.sql.*;
 import java.util.Vector;
 
+import Modelo.Editorial;
+import Modelo.Fecha;
+import Modelo.Macros;
+import Modelo.Stand;
+
 public class BasedeDatos {
-
-    private static final String HOST = "bqkzjmjlajv6gm0z04nh-mysql.services.clever-cloud.com";
-    private static final String PUERTO = "3306";
-    private static final String NOMBRE_BD = "bqkzjmjlajv6gm0z04nh";
-    private static final String USUARIO = "ukuk9dwgvknjhevr";
-    private static final String CONTRASENA = "Y52fvAyk0TUoYaOKrUnG";
-
-    private static final String URL = "jdbc:mysql://" + HOST + ":" + PUERTO + "/" + NOMBRE_BD + "?useSSL=true&serverTimezone=UTC";
-
-    public static Connection conectar() {
-        try {
-            return DriverManager.getConnection(URL, USUARIO, CONTRASENA);
-        } catch (SQLException e) {
-            System.out.println("Error al conectar con Clever Cloud: " + e.getMessage());
-            return null;
-        }
-    }
 
     // Crear tablas
     public static void CrearTablas() {
-        try (Connection conn = conectar();
+        try (Connection conn = Link.conectar();
              Statement stmt = conn.createStatement()) {
 
             String sqlEditoriales = "CREATE TABLE IF NOT EXISTS Editoriales (" +
@@ -76,7 +63,7 @@ public class BasedeDatos {
     }
 
     public static void MostrarTablas(){
-        try (Connection conn = conectar()) {
+        try (Connection conn = Link.conectar()) {
             if (conn != null && !conn.isClosed()) {
                 System.out.println("Conectado");
             } else {
@@ -135,7 +122,7 @@ public class BasedeDatos {
 
     public static void GuardarEditorial(Editorial editorial) {
         String sql = "INSERT INTO Editoriales (identificador, nombre) VALUES (?, ?) ON DUPLICATE KEY UPDATE nombre = VALUES(nombre)";
-        try (Connection conn = conectar();
+        try (Connection conn = Link.conectar();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, editorial.IdentificadorUnico);
             pstmt.setString(2, editorial.Nombre);
@@ -147,7 +134,7 @@ public class BasedeDatos {
 
     public static void GuardarReserva(int idEditorial, Stand stand, Fecha fecha) {
         String sql = "INSERT INTO Reservas (Id_Editorial, Id_Stand, Dia, Mes) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE Dia = VALUES(Dia), Mes = VALUES(Mes)";
-        try (Connection conn = conectar();
+        try (Connection conn = Link.conectar();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idEditorial);
             pstmt.setInt(2, stand.Identificador);
@@ -162,7 +149,7 @@ public class BasedeDatos {
 
     public static void GuardarCompra(int idEditorial, Stand stand) {
         String sql = "INSERT INTO Compras (Id_Editorial, Id_Stand) VALUES (?, ?) ON DUPLICATE KEY UPDATE Id_Stand = VALUES(Id_Stand)";
-        try (Connection conn = conectar();
+        try (Connection conn = Link.conectar();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idEditorial);
             pstmt.setInt(2, stand.Identificador);
@@ -175,7 +162,7 @@ public class BasedeDatos {
 
     public static void GuardarStand(Stand stand) {
         String sql = "INSERT INTO Stands (Identificador, Estado, Alto, Ancho, Costo) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE Estado = VALUES(Estado), Alto = VALUES(Alto), Ancho = VALUES(Ancho), Costo = VALUES(Costo)";
-        try (Connection conn = conectar();
+        try (Connection conn = Link.conectar();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, stand.Identificador);
             pstmt.setInt(2, stand.Estado);
@@ -190,7 +177,7 @@ public class BasedeDatos {
 
     public static Stand EncontrarStand(int identificador) {
         String sql = "SELECT * FROM Stands WHERE Identificador = ?";
-        try (Connection conn = conectar();
+        try (Connection conn = Link.conectar();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, identificador);
             ResultSet rs = pstmt.executeQuery();
@@ -212,7 +199,7 @@ public class BasedeDatos {
         if (editorial == null) return;
 
         String sql = "SELECT Id_Stand FROM EditorialesEspeciales WHERE Id_Editorial = ?";
-        try (Connection conn = conectar();
+        try (Connection conn = Link.conectar();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, editorial.IdentificadorUnico);
             ResultSet rs = pstmt.executeQuery();
@@ -232,7 +219,7 @@ public class BasedeDatos {
 
     public static void ActualizarEstadoStand(Stand stand) {
         String sql = "UPDATE Stands SET Estado = ? WHERE Identificador = ?";
-        try (Connection conn = conectar();
+        try (Connection conn = Link.conectar();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, stand.Estado);
             pstmt.setInt(2, stand.Identificador);
@@ -256,7 +243,7 @@ public class BasedeDatos {
                             "FROM Compras c INNER JOIN Stands s ON c.Id_Stand = s.Identificador " +
                             "WHERE c.Id_Editorial = ?";
 
-        try (Connection conn = conectar()) {
+        try (Connection conn = Link.conectar()) {
             //Llenar el HashMap de Reservas de la editorial
             try (PreparedStatement psRes = conn.prepareStatement(sqlReservas)) {
                 psRes.setInt(1, editorial.IdentificadorUnico);
@@ -285,7 +272,7 @@ public class BasedeDatos {
     public static Vector<Stand> ObtenerStands() {
         String sql = "SELECT * FROM Stands";
         Vector<Stand> stands = new Vector<Stand>();
-        try (Connection conn = conectar();
+        try (Connection conn = Link.conectar();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {

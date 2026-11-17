@@ -1,5 +1,8 @@
 package Modelo;
 import java.util.Map;
+
+import BD.BasedeDatos;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
